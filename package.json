@@ -1,8 +1,8 @@
 {
   "name": "test_app",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "Alberto Gandara Puertas",
+  "homepage": "https://albertogandara.com/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -26,6 +26,7 @@
     "@capacitor/status-bar": "4.1.1",
     "@ionic/angular": "^6.1.9",
     "ionicons": "^6.0.3",
+    "protractor-jasmine2-html-reporter": "0.0.7",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -61,5 +62,5 @@
     "ts-node": "~8.3.0",
     "typescript": "~4.8.4"
   },
-  "description": "An Ionic project"
+  "description": "Prueba técnica (Sanitas)"
 }

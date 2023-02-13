@@ -1,20 +1,89 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
+<ion-header [translucent]="true" >
+  <ion-toolbar color="primary">
     <ion-title>
-      Blank
+      Listado de imágenes
     </ion-title>
+  </ion-toolbar>
+
+  <!-- BUSCADOR -->
+  <ion-toolbar color="secondary" >
+    <ion-searchbar (ionChange)="onChangeSearchBar($event)" animated="true" search-icon="search-circle" show-clear-button="focus" clear-icon="trash-bin" placeholder="Buscar por ID o texto"></ion-searchbar>
+  </ion-toolbar>
+
+  <!-- SELECTOR GRID/LISTA -->
+  <ion-toolbar color="secondary" >
+    <ion-segment [(ngModel)]="segmentGridIndex" mode="ios" >
+      <ion-segment-button [value]="Constants.DISPLAY_TYPE.GRID">
+        <ion-icon color="primary" name="grid-outline"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button [value]="Constants.DISPLAY_TYPE.LIST">
+        <ion-icon color="primary" name="list-outline"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" >
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <!-- MOSTRAR CONTENIDO -->
+  <div [ngSwitch]="segmentGridIndex">
+    <div *ngSwitchCase="Constants.DISPLAY_TYPE.GRID">
+      <ng-container *ngTemplateOutlet="GRID"></ng-container>  
+    </div>
+      
+    <div *ngSwitchCase="Constants.DISPLAY_TYPE.LIST">
+      <ng-container *ngTemplateOutlet="LIST"></ng-container>  
+    </div>
   </div>
+
+  <!-- VISTA GRID -->
+  <ng-template #GRID>
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="auto" *ngFor="let photo of photoListInfiniteScroll" class="gridListCol">
+          <ion-card>
+            <img class="photo" [alt]="photo.text" [src]="photo.photo" (error)="onErrorImage($event)"/>
+            <div class="top-left">ID: {{photo.id}}</div>
+            <div class="text-overlay ion-text-capitalize">
+              <h1>{{photo.text}}</h1>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-template>
+
+  <!-- VISTA LISTA -->
+  <ng-template #LIST>
+    <ion-list>
+      <ion-item *ngFor="let photo of photoListInfiniteScroll" >
+        <ion-thumbnail slot="start">
+          <img class="photo" [alt]="photo.text" [src]="photo.photo" (error)="onErrorImage($event)"/>
+        </ion-thumbnail>
+        <ion-note slot="end">ID: {{photo.id}}</ion-note>
+        <ion-label class="ion-text-capitalize" text-wrap>
+          {{photo.text}}
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+
+  <!-- MOSTRAR SI NO SE ENCUENTRA CONTENIDO -->
+  <div class="ion-text-center" *ngIf="!photoListInfiniteScroll.length">
+    <h1 id="noTextFound">No se ha encontrado contenido.</h1>
+  </div>
+
+  <!-- SCROLL INFINTO -->
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreData($event)" [disabled]="infinityScrollDisabled">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más datos...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!-- MOSTRAR AL FINAL DEL CONTENIDO -->
+  <ion-footer *ngIf="infinityScrollDisabled && photoListInfiniteScroll.length">
+    <ion-toolbar color="secondary">
+      <ion-title class="ion-text-center"><h1>No existe más contenido.</h1></ion-title>
+    </ion-toolbar>
+  </ion-footer>
+
 </ion-content>
